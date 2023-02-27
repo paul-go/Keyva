@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"outFile": "+build/keyva.js",
+	},
+	"exclude": [
+		"**/+build/**/*.ts",
+		"**/*.cover.ts",
+	],
+}

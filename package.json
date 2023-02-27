@@ -1,0 +1,11 @@
+{
+	"name": "keyva",
+	"author": "Paul Gordon",
+	"description": "",
+	"version": "1.0.0",
+	"main": "keyva.js",
+	"scripts": {
+		"bundle": "tsc -p tsconfig.release.json && terser ./+build/keyva.debug.js > ./+build/keyva.min.js"
+	},
+	"license": "MIT"
+}
