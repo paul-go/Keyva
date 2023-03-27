@@ -2,7 +2,7 @@
 class Keyva
 {
 	/**
-	 * An IDBKeyRange that has no upper or lower boundary.
+	 * An IDBKeyRange that has no upper or lower bounding.
 	 */
 	static readonly unbound = IDBKeyRange.lowerBound(Number.MIN_SAFE_INTEGER);
 	
@@ -44,11 +44,11 @@ class Keyva
 		Promise.all(names.map(n => this.asPromise(indexedDB.deleteDatabase(n))));
 	}
 	
-	/** */
+	/** Stores the prefix that is added to every IndexedDB database created by Keyva. */
 	private static readonly kvPrefix = "-keyva-";
 	
 	/**
-	 * 
+	 * Creates a new IndexedDB-backed database 
 	 */
 	constructor(options: Keyva.IConstructorOptions = {})
 	{
@@ -61,11 +61,6 @@ class Keyva
 	private readonly name: string;
 	
 	/**
-	 * Gets all keys and values from the Keyva database.
-	 * @param key The key of the value to get.
-	 */
-	get<T = any>(): Promise<[Keyva.Key, T][]>;
-	/**
 	 * Get a value by its key.
 	 * @param key The key of the value to get.
 	 */
@@ -75,99 +70,72 @@ class Keyva
 	 * @param keys The key of the value to get.
 	 */
 	get<T = any>(keys: Keyva.Key[]): Promise<T[]>;
-	/**
-	 * Gets an object that contains the specified indexed value.
-	 * 
-	 * @returns The first object in the Keyva database within the index,
-	 * or null in the case when no matching object could be found.
-	 */
-	get<T = any>(key: Keyva.Key, index: string): Promise<T>;
-	/**
-	 * Gets an array of keys and objects, where the keys are within
-	 * the specified range, optionally from the specified index.
-	 * 
-	 * @returns An array of key/value tuples containing the results.
-	 */
-	get(range: IDBKeyRange, index?: string): Promise<[Keyva.Key, any][]>;
-	/**
-	 * Gets an array of keys, where the keys are within
-	 * the specified range, optionally from the specified index.
-	 * 
-	 * @returns An array of keys containing the results.
-	 */
-	get(range: IDBKeyRange, index: string, keys?: typeof Keyva["keys"]): Promise<Keyva.Key[]>;
-	/**
-	 * Gets an array of values, where the corresponding keys are within
-	 * the specified range, optionally from the specified index.
-	 * 
-	 * @returns An array of values containing the results.
-	 */
-	get<T = any>(range: IDBKeyRange, index: string, values?: typeof Keyva["values"]): Promise<T[]>;
-	/**
-	 * Gets an array of keys, where the keys are within
-	 * the specified range.
-	 * 
-	 * @returns An array of keys containing the results.
-	 */
-	get(range: IDBKeyRange, keys?: typeof Keyva["keys"]): Promise<Keyva.Key[]>;
-	/**
-	 * Gets an array of values, where the corresponding keys are within
-	 * the specified range.
-	 * 
-	 * @returns An array of values containing the results.
-	 */
-	get<T = any>(range: IDBKeyRange, values?: typeof Keyva["values"]): Promise<T>;
 	/** */
-	async get(k?: Keyva.Key | Keyva.Key[] | IDBKeyRange, ...options: any[])
+	async get(k: Keyva.Key | Keyva.Key[])
 	{
 		const store = await this.getStore("readonly");
-		const index = options.find((op): op is string => typeof op === "string") || "";
-		k ??= Keyva.unbound;
 		
-		if (k instanceof IDBKeyRange)
-		{
-			const target = index ? store.index(index) : store;
-			
-			if (options.includes(Keyva.keys))
-				return Keyva.asPromise(target.getAllKeys(k));
-			
-			if (options.includes(Keyva.values))
-				return Keyva.asPromise(target.getAll(k));
-			
-			let keys: Keyva.Key[] = [];
-			let values: any[] = [];
-			
-			await Promise.allSettled([
-				new Promise<void>(async r =>
-				{
-					const results = await Keyva.asPromise(target.getAllKeys(k));
-					keys.push(...results as Keyva.Key[]);
-					r();
-				}),
-				new Promise<void>(async r =>
-				{
-					const results = await Keyva.asPromise(target.getAll(k));
-					values.push(...results);
-					r();
-				}),
-			]);
-			
-			const tuples: [Keyva.Key, any][] = [];
-			
-			for (let i = -1; ++i < keys.length;)
-				tuples.push([keys[i], values[i]]);
-			
-			return tuples;
-		}
-		else
-		{
-			if (index)
-				return Keyva.asPromise(store.index(index).get(k));
-			
-			return Array.isArray(k) ?
-				Promise.all(k.map(key => Keyva.asPromise(store.get(key)))) :
-				Keyva.asPromise(store.get(k));
-		}
+		return Array.isArray(k) ?
+			Promise.all(k.map(key => Keyva.asPromise(store.get(key)))) :
+			Keyva.asPromise(store.get(k));
+	}
+	
+	/**
+	 * Gets all keys and values from the Keyva database.
+	 * @param key The key of the value to get.
+	 */
+	each<T = any>(): Promise<[Keyva.Key, T][]>;
+	/**
+	 * Gets a series of keys and values that match the specified
+	 * set of options.
+	 */
+	each<T = any>(options: Keyva.IQuery): Promise<[Keyva.Key, T][]>;
+	/**
+	 * Gets a series of keys only that match the specified set of options.
+	 */
+	each(options: Keyva.IQuery, only: "keys"): Promise<Keyva.Key[]>;
+	/**
+	 * Gets a series of values only that match the specified set of options.
+	 */
+	each<T = any>(options: Keyva.IQuery, only: "values"): Promise<T[]>;
+	/** */
+	async each(options: Keyva.IQuery = {}, only?: "keys" | "values"): Promise<any>
+	{
+		const store = await this.getStore("readonly");
+		const target = options.index ? store.index(options.index) : store;
+		const limit = options.limit;
+		const range = options.range;
+		
+		if (only === "keys")
+			return Keyva.asPromise(target.getAllKeys(range, limit));
+		
+		if (only === "values")
+			return Keyva.asPromise(target.getAll(range, limit));
+		
+		let keys: Keyva.Key[] = [];
+		let values: any[] = [];
+		
+		await Promise.allSettled([
+			new Promise<void>(async r =>
+			{
+				const results = await Keyva.asPromise(target.getAllKeys(range, limit));
+				keys.push(...results as Keyva.Key[]);
+				r();
+			}),
+			new Promise<void>(async r =>
+			{
+				const results = await Keyva.asPromise(target.getAll(range, limit));
+				values.push(...results);
+				r();
+			}),
+		]);
+		
+		const tuples: [Keyva.Key, any][] = [];
+		
+		for (let i = -1; ++i < keys.length;)
+			tuples.push([keys[i], values[i]]);
+		
+		return tuples;
 	}
 	
 	/**
@@ -330,23 +298,39 @@ namespace Keyva
 	/** */
 	export interface IConstructorOptions
 	{
-		indexes?: string | string[];
+		/**
+		 * Defines the name of the IndexedDB database as it is stored in the browser.
+		 * Note that the name is prefixed with the Keyva database prefix constant.
+		 */
 		name?: string | number;
+		
+		/**
+		 * Defines the name or names of the index or indexes to define on the database.
+		 */
+		indexes?: string | string[];
+	}
+	
+	/** */
+	export interface IQuery
+	{
+		/**
+		 * A standard IDBKeyRange to use for the query. Worth noting that the  methods
+		 * in the static Keyva.* namespace contain utility functions to ease the creation
+		 * of IDBKeyRange objects.
+		 */
+		range?: IDBKeyRange;
+		
+		/** The name of the index to use for the query. */
+		index?: string;
+		
+		/** A number which indicates the maximum number of objects to return from a query. */
+		limit?: number;
 	}
 	
 	/** */
 	export type Key = string | number | Date | BufferSource;
 	
-	if (typeof Symbol === "undefined")
-		(window as any).Symbol = (name: string) => Object.freeze({ name });
-	
-	export const keys = Symbol("keys");
-	export const values = Symbol("values");
-	
 	declare var module: any;
 	if (typeof module === "object")
 		Object.assign(module.exports, { Keyva });
 }
-
-//@ts-ignore
-if (typeof module === "object") Object.assign(module.exports, { Keyva });
