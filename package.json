@@ -3,9 +3,31 @@
 	"author": "Paul Gordon",
 	"description": "",
 	"version": "1.0.0",
-	"main": "keyva.js",
-	"scripts": {
-		"bundle": "tsc -p tsconfig.release.json && terser ./+build/keyva.debug.js > ./+build/keyva.min.js"
+	"license": "MIT",
+	"main": "./+build/keyva.js",
+	"types": "./+build/hot.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/paul-go/keyva"
 	},
-	"license": "MIT"
+	"bugs": {
+		"url": "https://github.com/paul-go/keyva/issues"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 0",
+		"bundle": "tsc -p tsconfig.release.json && terser ./+build/keyva.debug.js > ./+build/keyva.min.js",
+		"release": "npm run bundle && np"
+	},
+	"files": [
+		"LICENSE",
+		"readme.md",
+		"readme-poster.png",
+		"./+build/keyva.js",
+		"./+build/keyva.min.js",
+		"./+build/keyva.d.ts",
+		"./+build/keyva.d.ts.map"
+	],
+	"np": {
+		"contents": "./+build"
+	}
 }
