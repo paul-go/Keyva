@@ -10,14 +10,14 @@ Keyva is a feather-weight zero-dependency TypeScript library that gives you key/
 
 There are [many existing IndexedDB abstractions](https://www.paultman.com/best-library-for-indexeddb-localforage-idb-keyval-or-idb/). While these projects meet some definition of *functional*, a library design aficionado like myself finds them insufficiently elegant. **This matters**. Especially for a key/value access layer which is going to be used in literally every app one might build.
 
-Some libraries have carefully designed APIs where significant care was obviously taken while designing the interface rather than only focusing on the implementation. These libraries place a very high value on ergonomics, simplicity, thoughtful names, cognitive load minimization, and achieving the best possible Intellisense experience. These libraries have **staying power**. They're the type you keep reaching for **year after year**.
+Some libraries have that *it* factor where a significant amount of thought was obviously given to the interface, rather than only the internals. These libraries place a very high value on ergonomics, simplicity, naming, cognitive load minimization, and achieving the best possible Intellisense experience. These libraries have **staying power**. They're the type you keep reaching for **year after year**.
 
 I didn't find any key/value access layer that inspired this level of confidence. So I designed one that does.
 
 ## Features
 
 - Simple like localStorage, but powerful like IndexedDB.
-- Feather-weight. Only **1.7KB** zipped + minified.
+- Feather-weight. Only **1.5KB** zipped + minified.
 - Zero dependencies
 - Written in TypeScript. Code is commented and readable.
 
