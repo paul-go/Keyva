@@ -15,7 +15,7 @@
 	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 0",
-		"bundle": "tsc -p tsconfig.release.json && terser ./+build/keyva.debug.js > ./+build/keyva.min.js",
+		"bundle": "tsc -p tsconfig.release.json && terser ./+build/keyva.js > ./+build/keyva.min.js",
 		"release": "npm run bundle && np"
 	},
 	"files": [
