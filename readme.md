@@ -21,6 +21,22 @@ I didn't find any key/value access layer that inspired this level of confidence.
 - Zero dependencies
 - Written in TypeScript. Code is commented and readable.
 
+## Installation
+
+Installation via npm:
+
+```
+npm install keyvajs --save
+```
+
+Script tag installation:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/keyvajs@1.0.7/+build/keyva.min.js"></script>
+```
+
+Or just download the `Keyva.ts` file and add it directly to your project.
+
 ## Usage
 
 Start by creating a `Keyva` object, which creates a new IndexedDB database with a default name:
