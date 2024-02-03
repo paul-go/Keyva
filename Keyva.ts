@@ -329,8 +329,14 @@ namespace Keyva
 	
 	/** */
 	export type Key = string | number | Date | BufferSource;
-	
-	declare var module: any;
-	if (typeof module === "object")
-		Object.assign(module.exports, { Keyva });
+}
+
+//@ts-ignore CommonJS compatibility
+if (typeof module === "object") Object.assign(module.exports, { Keyva });
+
+// Enable typeof import("@squaresapp/rawjs")
+declare module "keyvajs"
+{
+	const __export: Keyva;
+	export = __export;
 }
