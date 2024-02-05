@@ -26,5 +26,8 @@
 		"keyva.min.js",
 		"keyva.d.ts",
 		"keyva.d.ts.map"
-	]
+	],
+	"devDependencies": {
+		"moduless": "^3.2.5"
+	}
 }
