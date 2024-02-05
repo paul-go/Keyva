@@ -73,4 +73,4 @@ namespace Cover
 }
 
 //@ts-ignore
-if (typeof module === "object") Object.assign(module.exports, { Cover });
+typeof module !== "undefined" && Object.assign(module.exports, { Cover });
