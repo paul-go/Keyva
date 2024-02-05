@@ -16,10 +16,10 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 0",
 		"bundle": "tsc -p tsconfig.release.json && terser ./+build/keyva.js > ./+build/keyva.min.js",
-		"release": "npm run bundle && cd ./+build && cp ../package.json ./package.json && np && cp ./package.json ../package.json"
+		"release": "npm run bundle && cp ./+build/keyva*.{js,ts,map} ./ && np && rm ./keyva*.{js,ts,map}"
 	},
 	"files": [
-		"LICENSE",
+		"License.txt",
 		"readme.md",
 		"readme-poster.png",
 		"keyva.js",

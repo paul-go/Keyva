@@ -22,7 +22,7 @@
 			"esnext.asynciterable"
 		]
 	},
-	"exclude": [
-		"**/+build/**/*.ts",
+	"include": [
+		"core/**/*.ts",
 	]
 }
