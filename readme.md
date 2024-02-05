@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="readme-poster.png" alt="HotJS Poster Image">
+	<img src="readme-poster.png" alt="Keyva Poster Image">
 </p>
 
 # What is Keyva?
